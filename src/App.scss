@@ -70,17 +70,17 @@ body {
       @keyframes anim-#{$i} {
         0% {
           left: 0;
-          top: 0
+          top: 0;
         }
 
         50% {
           left: nth($left-collection, $i+1);
-          top: nth($top-collection, $i)
+          top: nth($top-collection, $i);
         }
 
         100% {
           left: 0;
-          top: 0
+          top: 0;
         }
       }
     }
