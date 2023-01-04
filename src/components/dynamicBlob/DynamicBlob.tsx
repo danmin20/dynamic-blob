@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import "./index.scss";
 
 type DynamicBlobProps = {
   count: number;

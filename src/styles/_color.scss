@@ -1,0 +1,13 @@
+html[data-theme='light'] {
+    --background-color: #85EDE8;
+    --theme-toggle-bg: #121327;
+    --blob-bg: #121327;
+    --icon-color: #fff;
+}
+
+html[data-theme='dark'] {
+    --background-color: #121327;
+    --theme-toggle-bg: #ffffff;
+    --blob-bg: #85EDE8;
+    --icon-color: #000;
+}

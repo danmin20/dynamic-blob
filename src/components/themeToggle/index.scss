@@ -1,0 +1,23 @@
+.theme-toggle {
+    cursor: pointer;
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    background-color: var(--theme-toggle-bg);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 20px;
+    right: 20px;
+    transition: 0.3s;
+
+    .theme-icon {
+        color: var(--icon-color);
+        width: 20px;
+        height: 20px;
+    }
+}

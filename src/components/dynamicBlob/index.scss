@@ -1,0 +1,70 @@
+@use '../../styles/function.scss' as *;
+
+.dynamic-blob {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50, -50);
+    filter: (url('#goo'));
+
+    div {
+        width: 80px;
+        height: 80px;
+        background: var(--blob-bg);
+        border-radius: 500px;
+        display: inline-block;
+        position: absolute;
+        box-shadow: 0px 0px 50px var(--blob-bg);
+        $top-collection: 0;
+        $left-collection: 0;
+
+        @for $i from 2 to 17 {
+            $left: randomNum(-60px, 60px);
+            $top: randomNum(-60px, 60px);
+            $randWH : randomNum(30px, 60px);
+
+            &:nth-child(#{$i}) {
+                width: $randWH;
+                height: $randWH;
+                left: $left;
+            }
+
+            $left-collection: append($left-collection, $left);
+            $top-collection: append($top-collection, $top);
+        }
+
+        @for $i from 1 to length($top-collection) {
+            &:nth-child(#{$i}) {
+                top: 0;
+                left: 0;
+                animation: anim-#{$i} 2.5s ease-in-out infinite;
+
+                @if($i ==1) {
+                    animation-delay: 0s;
+                }
+
+                @else {
+                    animation-delay: (randomNum(1s, 3s));
+                }
+            }
+
+            /**keyframes **/
+            @keyframes anim-#{$i} {
+                0% {
+                    left: 0;
+                    top: 0;
+                }
+
+                50% {
+                    left: nth($left-collection, $i+1);
+                    top: nth($top-collection, $i);
+                }
+
+                100% {
+                    left: 0;
+                    top: 0;
+                }
+            }
+        }
+    }
+}
