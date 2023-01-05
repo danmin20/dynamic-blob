@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { MouseEventHandler, useEffect } from "react";
 import "./index.scss";
 
 type DynamicBlobProps = {
@@ -7,14 +7,14 @@ type DynamicBlobProps = {
 
 const DynamicBlob = ({ count }: DynamicBlobProps) => {
   let selected: HTMLDivElement | null = null;
-  const handleMousedown = (dom: HTMLDivElement) => {
-    selected = dom;
+
+  const handleMousedown: MouseEventHandler<HTMLDivElement> = (e) => {
+    selected = e.target as HTMLDivElement;
   };
 
   useEffect(() => {
     const handleMouseup = () => {
       if (!selected) return;
-
       selected.style.animation = "bounceBack 1s ease";
       selected.style.animationFillMode = "forwards";
 
@@ -37,13 +37,14 @@ const DynamicBlob = ({ count }: DynamicBlobProps) => {
         selected.getBoundingClientRect().width / 2 -
         window.innerWidth / 2 +
         "px";
+
       selected.style.top =
         e.clientY -
         selected.getBoundingClientRect().height / 2 -
         window.innerHeight / 2 +
         "px";
 
-      selected.style.animation = "";
+      selected.style.animation = "0";
     };
 
     window.addEventListener("mouseup", () => handleMouseup());
@@ -59,11 +60,7 @@ const DynamicBlob = ({ count }: DynamicBlobProps) => {
     <>
       <div id="dynamic-blob" className="dynamic-blob">
         {[...new Array(count)].map((_, idx) => (
-          <div
-            id={idx.toString()}
-            key={idx}
-            onMouseDown={(e) => handleMousedown(e.target as HTMLDivElement)}
-          />
+          <div id={idx.toString()} key={idx} onMouseDown={handleMousedown} />
         ))}
       </div>
 

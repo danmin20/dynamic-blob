@@ -1,6 +1,5 @@
 import "./App.scss";
 import DynamicBlob from "./components/dynamicBlob/DynamicBlob";
-import ThemeToggle from "./components/themeToggle/ThemeToggle";
 
 const App = () => {
   return (
