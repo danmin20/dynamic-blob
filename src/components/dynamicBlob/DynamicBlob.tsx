@@ -1,4 +1,4 @@
-import { MouseEventHandler, useEffect } from "react";
+import { MouseEventHandler, TouchEventHandler, useEffect } from "react";
 import "./index.scss";
 
 type DynamicBlobProps = {
@@ -8,51 +8,71 @@ type DynamicBlobProps = {
 const DynamicBlob = ({ count }: DynamicBlobProps) => {
   let selected: HTMLDivElement | null = null;
 
-  const handleMousedown: MouseEventHandler<HTMLDivElement> = (e) => {
+  const handleStart = (
+    e:
+      | React.MouseEvent<HTMLDivElement, MouseEvent>
+      | React.TouchEvent<HTMLDivElement>
+  ) => {
     selected = e.target as HTMLDivElement;
   };
 
+  const handleEnd = () => {
+    if (!selected) return;
+    selected.style.animation = "bounceBack 1s ease";
+    selected.style.animationFillMode = "forwards";
+
+    const item = selected;
+    selected = null;
+
+    setTimeout(function () {
+      item.style.animation = "";
+      item.style.animationFillMode = "";
+      item.style.left = "";
+      item.style.top = "";
+    }, 1000);
+  };
+
+  const handleMousemove = (
+    eType: "mouse" | "touch",
+    e: MouseEvent | TouchEvent
+  ) => {
+    if (!selected) return;
+
+    const eventTarget =
+      eType === "mouse" ? (e as MouseEvent) : (e as TouchEvent).touches[0];
+
+    selected.style.left =
+      eventTarget.clientX -
+      selected.getBoundingClientRect().width / 2 -
+      window.innerWidth / 2 +
+      "px";
+
+    selected.style.top =
+      eventTarget.clientY -
+      selected.getBoundingClientRect().height / 2 -
+      window.innerHeight / 2 +
+      "px";
+
+    selected.style.animation = "0";
+  };
+
   useEffect(() => {
-    const handleMouseup = () => {
-      if (!selected) return;
-      selected.style.animation = "bounceBack 1s ease";
-      selected.style.animationFillMode = "forwards";
+    window.addEventListener("mouseup", handleEnd);
+    window.addEventListener("touchend", handleEnd);
 
-      const item = selected;
-      selected = null;
-
-      setTimeout(function () {
-        item.style.animation = "";
-        item.style.animationFillMode = "";
-        item.style.left = "";
-        item.style.top = "";
-      }, 1000);
-    };
-
-    const handleMousemove = (e: MouseEvent) => {
-      if (!selected) return;
-
-      selected.style.left =
-        e.clientX -
-        selected.getBoundingClientRect().width / 2 -
-        window.innerWidth / 2 +
-        "px";
-
-      selected.style.top =
-        e.clientY -
-        selected.getBoundingClientRect().height / 2 -
-        window.innerHeight / 2 +
-        "px";
-
-      selected.style.animation = "0";
-    };
-
-    window.addEventListener("mouseup", () => handleMouseup());
-    window.addEventListener("mousemove", (e) => handleMousemove(e));
+    window.addEventListener("mousemove", (e) => handleMousemove("mouse", e));
+    window.addEventListener("touchmove", (e) => handleMousemove("touch", e));
 
     return () => {
-      window.removeEventListener("mouseup", () => handleMouseup());
-      window.removeEventListener("mousemove", (e) => handleMousemove(e));
+      window.removeEventListener("mouseup", handleEnd);
+      window.removeEventListener("touchend", handleEnd);
+
+      window.removeEventListener("mousemove", (e) =>
+        handleMousemove("mouse", e)
+      );
+      window.removeEventListener("touchmove", (e) =>
+        handleMousemove("touch", e)
+      );
     };
   }, []);
 
@@ -60,7 +80,12 @@ const DynamicBlob = ({ count }: DynamicBlobProps) => {
     <>
       <div id="dynamic-blob" className="dynamic-blob">
         {[...new Array(count)].map((_, idx) => (
-          <div id={idx.toString()} key={idx} onMouseDown={handleMousedown} />
+          <div
+            id={idx.toString()}
+            key={idx}
+            onMouseDown={handleStart}
+            onTouchStart={handleStart}
+          />
         ))}
       </div>
 
